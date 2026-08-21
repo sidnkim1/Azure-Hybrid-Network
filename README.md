@@ -6,7 +6,7 @@
 
 This project is a hybrid enterprise networking lab designed to simulate a real-world Azure-connected environment and provide hands-on experience with routing, VPNs, DNS, cloud networking, resiliency testing, and incident troubleshooting.
 
-The primary goal of the lab is not to build a production-ready Azure environment, but rather to create a platform for learning and troubleshooting technologies commonly found in modern hybrid cloud deployments.
+The primary goal of the lab is to create a platform for learning and troubleshooting technologies commonly found in modern hybrid cloud deployments.
 
 The design combines traditional enterprise networking concepts with Microsoft Azure networking services to emulate common connectivity scenarios encountered by network engineers supporting hybrid environments.
 
