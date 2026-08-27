@@ -121,8 +121,7 @@ Hybrid-Enterprise-Network
 │
 ├── docs
 │   ├── architecture.md
-│   ├── addressing.md
-│   └── diagrams
+│   └── addressing.md
 │
 ├── configs
 │   ├── HQ
