@@ -2,72 +2,84 @@
 
 ## Overview
 
-This project is a hybrid enterprise networking lab designed to simulate a real-world multi-site enterprise connected to Microsoft Azure.
+Hybrid enterprise networking deployment designed to simulate a multi-site enterprise connected to Microsoft Azure.
 
 The environment combines traditional enterprise networking technologies with cloud networking services to provide hands-on experience with routing, VPNs, DNS, high availability, cloud connectivity, troubleshooting, and network operations.
 
-The primary goal of the project is to create a platform for learning, testing, and troubleshooting technologies commonly found in modern hybrid cloud environments.
-
----
-
-## Objectives
-
-This project provides practical experience with:
-
-- Hybrid cloud networking
-- Site-to-Site VPNs
-- IPSec tunnels
-- OSPF routing
-- BGP fundamentals
-- DNS troubleshooting
-- Azure Private DNS
-- Conditional forwarding
-- Private Endpoints
-- VNet Peering
-- Route Tables and UDRs
-- Application Gateway
-- High availability and resiliency testing
-- Incident response and troubleshooting workflows
+The primary goal: troubleshooting technologies commonly found in modern hybrid cloud environments.
 
 ---
 
 ## Environment Overview
 
-The environment consists of:
+### Headquarters (HQ)
 
-### Headquarters Site
+The Headquarters site includes:
 
-- Dual Access Switches
-- Dual Layer 3 Core Switches
-- FortiGate HA Pair
-- Dual ISP Connectivity
-- User, Management, and Server VLANs
+- FortiGate HA firewall pair
+- Dual Layer 3 core switches
+- Dual access switches
+- Multiple VLANs
+- Dual ISP connectivity
+- On-premises users and services
 
-### Branch Site
+### Branch Office
 
-- Dual Access Switches
-- Dual Layer 3 Core Switches
-- FortiGate HA Pair
-- Dual ISP Connectivity
-- User, Management, and Server VLANs
+The Branch site mirrors the HQ architecture and includes:
+
+- FortiGate HA firewall pair
+- Dual Layer 3 core switches
+- Dual access switches
+- Multiple VLANs
+- Dual ISP connectivity
+- On-premises users and services
 
 ### Microsoft Azure
+
+The Azure environment consists of:
 
 - Hub VNet
 - Production VNet
 - Services VNet
 - Azure VPN Gateway
-- Azure Private DNS
+- Azure DNS services
 - Application Gateway
 - Application VM
-- DNS Services
+- Private Endpoints
+- Route Tables
+- NSGs
 
 ---
 
 ## Documentation
 
-- [Architecture Design](docs//addressing.md
-- [DNS Design](docs/dns.mdository Structure
+### Architecture
+
+High-level design, connectivity model, and Azure integration.
+
+```text
+docs/architecture.md
+```
+
+### Addressing Plan
+
+IP addressing, VLAN assignments, Azure address spaces, and routing domains.
+
+```text
+docs/addressing.md
+```
+
+### DNS Design
+
+Hybrid DNS architecture including BIND DNS, Azure DNS Resolver, Azure Private DNS, and conditional forwarding.
+
+```text
+docs/dns.md
+```
+
+---
+
+## Repository Structure
 
 ```text
 Hybrid-Enterprise-Network
@@ -86,3 +98,26 @@ Hybrid-Enterprise-Network
 │   └── Azure
 │
 └── screenshots
+```
+
+---
+
+Focused on understanding end-to-end packet flow:
+
+```text
+Client
+  ↓
+DNS
+  ↓
+Routing
+  ↓
+Firewall
+  ↓
+VPN
+  ↓
+Azure Networking
+  ↓
+Application
+  ↓
+Return Path
+```
