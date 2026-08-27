@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document defines the IP addressing, VLAN assignments, routing domains, and cloud address spaces used throughout the Hybrid Enterprise Network project.
+This document defines the IP addressing, VLAN assignments, routing domains, cloud address spaces, WAN transit networks, and BGP design used throughout the Hybrid Enterprise Network project.
 
 The addressing plan is designed to:
 
@@ -37,12 +37,23 @@ The addressing plan is designed to:
 
 | Purpose | Subnet |
 |------------|------------|
-| Core Transit | 10.42.254.0/30 |
-| FG-FW-A ↔ Core-A | 10.42.5.0/30 |
-| FG-FW-A ↔ Core-B | 10.42.5.4/30 |
-| FG-FW-B ↔ Core-A | 10.42.5.8/30 |
-| FG-FW-B ↔ Core-B | 10.42.5.12/30 |
+| FG-FW-A ↔ MLS-CORE-A | 10.42.5.0/30 |
+| FG-FW-A ↔ MLS-CORE-B | 10.42.5.4/30 |
+| FG-FW-B ↔ MLS-CORE-A | 10.42.5.8/30 |
+| FG-FW-B ↔ MLS-CORE-B | 10.42.5.12/30 |
+| WAN-A Transit | 172.42.0.0/29 |
+| WAN-B Transit | 172.42.0.8/29 |
 | FortiGate Loopback | 10.42.255.1/32 |
+
+### Addressing Convention
+
+| Device | Address Pattern |
+|----------|----------|
+| HSRP VIP | x.x.x.1 |
+| Primary Core Switch | x.x.x.2 |
+| Secondary Core Switch | x.x.x.3 |
+| Primary FortiGate | x.x.x.5 |
+| Secondary FortiGate | x.x.x.9 |
 
 ### Route Summary
 
@@ -76,12 +87,23 @@ Advertised to Azure via BGP.
 
 | Purpose | Subnet |
 |------------|------------|
-| Core Transit | 10.69.254.0/30 |
-| FG-FW-A ↔ Core-A | 10.69.5.0/30 |
-| FG-FW-A ↔ Core-B | 10.69.5.4/30 |
-| FG-FW-B ↔ Core-A | 10.69.5.8/30 |
-| FG-FW-B ↔ Core-B | 10.69.5.12/30 |
+| FG-FW-C ↔ MLS-CORE-C | 10.69.5.0/30 |
+| FG-FW-C ↔ MLS-CORE-D | 10.69.5.4/30 |
+| FG-FW-D ↔ MLS-CORE-C | 10.69.5.8/30 |
+| FG-FW-D ↔ MLS-CORE-D | 10.69.5.12/30 |
+| WAN-C Transit | 172.69.0.0/29 |
+| WAN-D Transit | 172.69.0.8/29 |
 | FortiGate Loopback | 10.69.255.1/32 |
+
+### Addressing Convention
+
+| Device | Address Pattern |
+|----------|----------|
+| HSRP VIP | x.x.x.1 |
+| Primary Core Switch | x.x.x.2 |
+| Secondary Core Switch | x.x.x.3 |
+| Primary FortiGate | x.x.x.5 |
+| Secondary FortiGate | x.x.x.9 |
 
 ### Route Summary
 
@@ -90,6 +112,30 @@ Advertised to Azure via BGP.
 ```
 
 Advertised to Azure via BGP.
+
+---
+
+# Endpoint Placement
+
+## Headquarters
+
+| Host | VLAN |
+|----------|----------|
+| HOST-A | VLAN 20 |
+| HOST-B | VLAN 20 |
+| HOST-C | VLAN 30 |
+| HOST-D | VLAN 10 |
+
+---
+
+## Branch
+
+| Host | VLAN |
+|----------|----------|
+| HOST-E | VLAN 20 |
+| HOST-F | VLAN 20 |
+| HOST-G | VLAN 30 |
+| HOST-H | VLAN 10 |
 
 ---
 
@@ -107,7 +153,7 @@ Advertised to Azure via BGP.
 
 | Subnet | Purpose |
 |------------|------------|
-| 10.100.1.0/24 | GatewaySubnet |
+| 10.100.1.0/24 | VPN Gateway |
 | 10.100.2.0/24 | DNS Resolver |
 
 ### Services
@@ -170,13 +216,12 @@ Advertised to Azure via BGP.
 
 | Subnet | Purpose |
 |------------|------------|
-| 10.102.10.0/24 | DNS Services |
+| 10.102.10.0/24 | Azure Private DNS |
 
 ### Services
 
-- BIND DNS Server
 - Azure Private DNS
-- Shared Services
+- Shared Infrastructure Services
 
 ### Route Summary
 
@@ -194,6 +239,54 @@ The Azure environment advertises the following networks:
 10.100.0.0/16
 10.101.0.0/16
 10.102.0.0/16
+```
+
+---
+
+# VPN Connectivity
+
+## Headquarters
+
+VPN Endpoint:
+
+```text
+FG-FW-A / FG-FW-B
+```
+
+Peer:
+
+```text
+Azure VPN Gateway
+```
+
+---
+
+## Branch
+
+VPN Endpoint:
+
+```text
+FG-FW-C / FG-FW-D
+```
+
+Peer:
+
+```text
+Azure VPN Gateway
+```
+
+---
+
+## Topology
+
+```text
+HQ
+  \
+   \
+    Azure VPN Gateway
+   /
+  /
+Branch
 ```
 
 ---
@@ -229,10 +322,10 @@ OSPF Area 0
 
 Participants:
 
-- MLS-CORE-A
-- MLS-CORE-B
-- FG-FW-A
-- FG-FW-B
+- MLS-CORE-C
+- MLS-CORE-D
+- FG-FW-C
+- FG-FW-D
 
 ---
 
