@@ -4,7 +4,7 @@
 
 This project simulates a hybrid enterprise environment consisting of two on-premises sites connected to Microsoft Azure.
 
-The environment is designed to provide hands-on experience with enterprise networking, cloud networking, VPN connectivity, routing, DNS, and troubleshooting.
+The environment is designed to provide hands-on experience with enterprise networking, cloud networking, VPN connectivity, routing, DNS, high availability, and troubleshooting.
 
 ---
 
@@ -46,9 +46,10 @@ The Headquarters site contains:
 - Two Layer 3 core switches
 - Two FortiGate firewalls configured in HA
 - Two ISP pass-through switches
+- Two ISP demarcation routers
 - Dual ISP connectivity
 
-Traffic from users is forwarded through the access layer, core layer, and FortiGate firewalls before reaching external resources.
+Traffic traverses the access layer, core layer, and FortiGate firewalls before reaching external resources.
 
 ---
 
@@ -63,6 +64,7 @@ The site contains:
 - Two Layer 3 core switches
 - Two FortiGate firewalls configured in HA
 - Two ISP pass-through switches
+- Two ISP demarcation routers
 - Dual ISP connectivity
 
 Branch resources communicate with Azure through the Azure VPN Gateway.
@@ -81,27 +83,34 @@ The Hub VNet provides:
 - Route propagation
 - DNS services
 
+### Components
+
+- Azure VPN Gateway
+- Azure DNS Resolver
+
+---
+
 ## Production VNet
 
 The Production VNet hosts:
 
 - Application Gateway
-- Application workloads
-- Private Endpoints
+- Application VM
+- Private Endpoint
+
+---
 
 ## Services VNet
 
 The Services VNet hosts:
 
-- BIND DNS
 - Azure Private DNS
-- Shared infrastructure services
 
 ---
 
 # Connectivity
 
-Headquarters and Branch establish Site-to-Site VPN connections to Azure.
+Headquarters and Branch establish independent Site-to-Site VPN connections to Azure.
 
 ```text
 HQ
@@ -113,7 +122,7 @@ HQ
 Branch
 ```
 
-The Azure Hub VNet serves as the central connectivity point between all environments.
+The Hub VNet serves as the central connectivity point between all environments.
 
 ---
 
@@ -123,21 +132,18 @@ Routing within each site is handled through OSPF.
 
 Routing between Azure and the on-premises sites is handled through BGP.
 
+Azure functions as the cloud transit hub between Headquarters and Branch.
+
 ---
 
 # DNS
 
-DNS services are provided through a hybrid design utilizing:
+DNS services are provided using:
 
-- BIND DNS
 - Azure DNS Resolver
 - Azure Private DNS
 
-Additional DNS information is documented in:
-
-```text
-docs/dns.md
-```
+DNS requests from on-premises sites are resolved through Azure DNS services over the VPN infrastructure.
 
 ---
 
@@ -157,9 +163,11 @@ docs/dns.md
 - Hub VNet
 - Production VNet
 - Services VNet
-- VPN Gateway
+- Azure VPN Gateway
+- Azure DNS Resolver
+- Azure Private DNS
 - Application Gateway
-- Private Endpoints
-- Azure DNS Services
+- Application VM
+- Private Endpoint
 - Route Tables
 - NSGs
