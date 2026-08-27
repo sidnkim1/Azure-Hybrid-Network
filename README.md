@@ -6,7 +6,7 @@ Hybrid enterprise networking deployment designed to simulate a multi-site enterp
 
 The environment combines traditional enterprise networking technologies with cloud networking services to provide hands-on experience with routing, VPNs, DNS, high availability, cloud connectivity, troubleshooting, and network operations.
 
-The primary goal: troubleshooting technologies commonly found in modern hybrid cloud environments.
+The primary goal is to provide a realistic platform for learning and troubleshooting technologies commonly found in modern hybrid-cloud environments.
 
 ---
 
@@ -16,38 +16,79 @@ The primary goal: troubleshooting technologies commonly found in modern hybrid c
 
 The Headquarters site includes:
 
+- Four end-user hosts
+- Two access switches
+- Two Layer 3 core switches
 - FortiGate HA firewall pair
-- Dual Layer 3 core switches
-- Dual access switches
-- Multiple VLANs
+- Two ISP pass-through switches
+- Two ISP demarcation routers
 - Dual ISP connectivity
-- On-premises users and services
+- OSPF routing
+- BGP connectivity to Azure
 
 ### Branch Office
 
-The Branch site mirrors the HQ architecture and includes:
+The Branch site mirrors the Headquarters architecture and includes:
 
+- Four end-user hosts
+- Two access switches
+- Two Layer 3 core switches
 - FortiGate HA firewall pair
-- Dual Layer 3 core switches
-- Dual access switches
-- Multiple VLANs
+- Two ISP pass-through switches
+- Two ISP demarcation routers
 - Dual ISP connectivity
-- On-premises users and services
+- OSPF routing
+- BGP connectivity to Azure
 
 ### Microsoft Azure
 
-The Azure environment consists of:
+The Azure environment utilizes a hub-and-spoke architecture and consists of:
 
-- Hub VNet
-- Production VNet
-- Services VNet
+#### Hub VNet
+
 - Azure VPN Gateway
-- Azure DNS services
+- Azure DNS Resolver
+- Route Propagation
+- Hybrid Connectivity Services
+
+#### Production VNet
+
 - Application Gateway
-- Application VM
+- Application Virtual Machine
+- Private Endpoint
+
+#### Services VNet
+
+- Azure Private DNS
+
+---
+
+## Core Technologies
+
+### Routing
+
+- OSPF
+- BGP
+- Route Propagation
+- Route Summarization
+- Azure Route Tables
+- User Defined Routes (UDRs)
+
+### Security
+
+- FortiGate High Availability
+- Site-to-Site IPSec VPNs
+- Network Security Groups (NSGs)
 - Private Endpoints
-- Route Tables
-- NSGs
+
+### Azure Networking
+
+- Hub-and-Spoke Architecture
+- Azure VPN Gateway
+- Azure DNS Resolver
+- Azure Private DNS
+- VNet Peering
+- Application Gateway
 
 ---
 
@@ -63,18 +104,10 @@ docs/architecture.md
 
 ### Addressing Plan
 
-IP addressing, VLAN assignments, Azure address spaces, and routing domains.
+IP addressing, VLAN assignments, Azure address spaces, routing design, VPN connectivity, and BGP configuration.
 
 ```text
 docs/addressing.md
-```
-
-### DNS Design
-
-Hybrid DNS architecture including BIND DNS, Azure DNS Resolver, Azure Private DNS, and conditional forwarding.
-
-```text
-docs/dns.md
 ```
 
 ---
@@ -89,7 +122,6 @@ Hybrid-Enterprise-Network
 ├── docs
 │   ├── architecture.md
 │   ├── addressing.md
-│   ├── dns.md
 │   └── diagrams
 │
 ├── configs
@@ -102,7 +134,9 @@ Hybrid-Enterprise-Network
 
 ---
 
-Focused on understanding end-to-end packet flow:
+## Traffic Flow Focus
+
+The project is designed around understanding end-to-end packet flow across on-premises and cloud environments.
 
 ```text
 Client
@@ -121,3 +155,5 @@ Application
   ↓
 Return Path
 ```
+
+Understanding and troubleshooting that packet journey is the primary focus of the project.
