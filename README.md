@@ -2,11 +2,29 @@
 
 ## Overview
 
-Hybrid enterprise networking deployment designed to simulate a multi-site enterprise connected to Microsoft Azure.
+Hybrid enterprise network deployment simulating a multi-site organization integrated with Microsoft Azure through a hybrid-cloud architecture.
 
-The environment combines traditional enterprise networking technologies with cloud networking services to provide hands-on experience with routing, VPNs, DNS, high availability, cloud connectivity, troubleshooting, and network operations.
+The environment combines enterprise routing, firewalling, high availability, VPN connectivity, and cloud networking services to model a modern network spanning on-premises infrastructure and Azure resources.
 
-The primary goal is to provide a realistic platform for learning and troubleshooting technologies commonly found in modern hybrid-cloud environments.
+The primary objective is to demonstrate a resilient hybrid enterprise architecture that integrates traditional networking infrastructure with cloud-native services, centralized connectivity, dynamic routing, and secure access to distributed workloads.
+
+---
+
+## Key Features
+
+- Multi-site enterprise architecture
+- FortiGate High Availability (HA)
+- OSPF internal routing
+- BGP route exchange with Azure
+- Dual ISP connectivity
+- Site-to-Site IPSec VPN connectivity
+- Azure Hub-and-Spoke architecture
+- Azure Virtual WAN integration
+- Private Endpoint connectivity
+- Azure DNS services
+- Layer 3 core redundancy using HSRP
+- Segmented VLAN architecture
+- Redundant switching infrastructure
 
 ---
 
@@ -42,14 +60,14 @@ The Branch site mirrors the Headquarters architecture and includes:
 
 ### Microsoft Azure
 
-The Azure environment utilizes a hub-and-spoke architecture and consists of:
+The Azure environment utilizes a Hub-and-Spoke architecture and consists of:
 
 #### Hub VNet
 
 - Azure VPN Gateway
 - Azure DNS Resolver
-- Route Propagation
 - Hybrid Connectivity Services
+- Route Propagation
 
 #### Production VNet
 
@@ -69,15 +87,15 @@ The Azure environment utilizes a hub-and-spoke architecture and consists of:
 
 - OSPF
 - BGP
-- Route Propagation
 - Route Summarization
+- Route Propagation
 - Azure Route Tables
 - User Defined Routes (UDRs)
 
 ### Security
 
 - FortiGate High Availability
-- Site-to-Site IPSec VPNs
+- Site-to-Site IPSec VPN
 - Network Security Groups (NSGs)
 - Private Endpoints
 
@@ -89,6 +107,7 @@ The Azure environment utilizes a hub-and-spoke architecture and consists of:
 - Azure Private DNS
 - VNet Peering
 - Application Gateway
+- Virtual WAN
 
 ---
 
@@ -104,7 +123,7 @@ docs/architecture.md
 
 ### Addressing Plan
 
-IP addressing, VLAN assignments, Azure address spaces, routing design, VPN connectivity, and BGP configuration.
+IP addressing, VLAN assignments, routing domains, WAN connectivity, and Azure network design.
 
 ```text
 docs/addressing.md
@@ -133,9 +152,9 @@ Hybrid-Enterprise-Network
 
 ---
 
-## Traffic Flow Focus
+## Network Architecture Focus
 
-The project is designed around understanding end-to-end packet flow across on-premises and cloud environments.
+The environment is designed to demonstrate end-to-end connectivity between enterprise users, on-premises infrastructure, security appliances, and Azure-hosted services.
 
 ```text
 Client
@@ -155,4 +174,4 @@ Application
 Return Path
 ```
 
-Understanding and troubleshooting that packet journey is the primary focus of the project.
+The architecture provides visibility into traffic flow across multiple networking domains while supporting validation, troubleshooting, resiliency testing, and hybrid-cloud connectivity scenarios.
