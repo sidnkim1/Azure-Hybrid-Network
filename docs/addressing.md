@@ -2,16 +2,7 @@
 
 ## Overview
 
-This document defines the IP addressing, VLAN assignments, routing domains, cloud address spaces, WAN transit networks, and BGP design used throughout the Hybrid Enterprise Network project.
-
-The addressing plan is designed to:
-
-- Prevent overlapping address spaces
-- Support route summarization
-- Simplify troubleshooting
-- Support hybrid-cloud connectivity
-- Support dynamic route exchange using BGP
-- Provide room for future expansion
+This document defines the IP addressing, VLAN assignments, routing domains, WAN transit networks, Azure address spaces, and BGP design used throughout the Hybrid Enterprise Network deployment.
 
 ---
 
@@ -33,27 +24,47 @@ The addressing plan is designed to:
 | 40 | Guest | 10.42.40.0/24 | 10.42.40.1 |
 | 100 | Finance | 10.42.100.0/24 | 10.42.100.1 |
 
-### Infrastructure Networks
+### Core Infrastructure
 
-| Purpose | Subnet |
-|------------|------------|
-| FG-FW-A ↔ MLS-CORE-A | 10.42.5.0/30 |
-| FG-FW-A ↔ MLS-CORE-B | 10.42.5.4/30 |
-| FG-FW-B ↔ MLS-CORE-A | 10.42.5.8/30 |
-| FG-FW-B ↔ MLS-CORE-B | 10.42.5.12/30 |
-| WAN-A Transit | 172.42.0.0/29 |
-| WAN-B Transit | 172.42.0.8/29 |
-| FortiGate Loopback | 10.42.255.1/32 |
+```text
+HSRP Virtual Gateway = .1
+MLS-CORE-A           = .2
+MLS-CORE-B           = .3
+```
 
-### Addressing Convention
+### Firewall Transit Networks
 
-| Device | Address Pattern |
-|----------|----------|
-| HSRP VIP | x.x.x.1 |
-| Primary Core Switch | x.x.x.2 |
-| Secondary Core Switch | x.x.x.3 |
-| Primary FortiGate | x.x.x.5 |
-| Secondary FortiGate | x.x.x.9 |
+#### CORE-A Transit
+
+```text
+10.42.5.0/30
+
+FortiGate HA Pair = 10.42.5.1
+MLS-CORE-A        = 10.42.5.2
+```
+
+#### CORE-B Transit
+
+```text
+10.42.5.4/30
+
+FortiGate HA Pair = 10.42.5.5
+MLS-CORE-B        = 10.42.5.6
+```
+
+### WAN Connectivity
+
+#### ISP-A
+
+```text
+172.42.0.0/29
+```
+
+#### ISP-B
+
+```text
+172.42.0.8/29
+```
 
 ### Route Summary
 
@@ -83,27 +94,19 @@ Advertised to Azure via BGP.
 | 40 | Guest | 10.69.40.0/24 | 10.69.40.1 |
 | 100 | Finance | 10.69.100.0/24 | 10.69.100.1 |
 
-### Infrastructure Networks
+### WAN Connectivity
 
-| Purpose | Subnet |
-|------------|------------|
-| FG-FW-C ↔ MLS-CORE-C | 10.69.5.0/30 |
-| FG-FW-C ↔ MLS-CORE-D | 10.69.5.4/30 |
-| FG-FW-D ↔ MLS-CORE-C | 10.69.5.8/30 |
-| FG-FW-D ↔ MLS-CORE-D | 10.69.5.12/30 |
-| WAN-C Transit | 172.69.0.0/29 |
-| WAN-D Transit | 172.69.0.8/29 |
-| FortiGate Loopback | 10.69.255.1/32 |
+#### ISP-C
 
-### Addressing Convention
+```text
+172.69.0.0/29
+```
 
-| Device | Address Pattern |
-|----------|----------|
-| HSRP VIP | x.x.x.1 |
-| Primary Core Switch | x.x.x.2 |
-| Secondary Core Switch | x.x.x.3 |
-| Primary FortiGate | x.x.x.5 |
-| Secondary FortiGate | x.x.x.9 |
+#### ISP-D
+
+```text
+172.69.0.8/29
+```
 
 ### Route Summary
 
@@ -119,23 +122,23 @@ Advertised to Azure via BGP.
 
 ## Headquarters
 
-| Host | VLAN |
-|----------|----------|
-| HOST-A | VLAN 20 |
-| HOST-B | VLAN 20 |
-| HOST-C | VLAN 30 |
-| HOST-D | VLAN 10 |
+| Host | VLAN | Address |
+|----------|----------|------------|
+| HOST-A | VLAN 20 | 10.42.20.10 |
+| HOST-B | VLAN 20 | 10.42.20.11 |
+| HOST-C | VLAN 30 | 10.42.30.10 |
+| HOST-D | VLAN 10 | 10.42.10.10 |
 
 ---
 
 ## Branch
 
-| Host | VLAN |
-|----------|----------|
-| HOST-E | VLAN 20 |
-| HOST-F | VLAN 20 |
-| HOST-G | VLAN 30 |
-| HOST-H | VLAN 10 |
+| Host | VLAN | Address |
+|----------|----------|------------|
+| HOST-E | VLAN 20 | 10.69.20.10 |
+| HOST-F | VLAN 20 | 10.69.20.11 |
+| HOST-G | VLAN 30 | 10.69.30.10 |
+| HOST-H | VLAN 10 | 10.69.10.10 |
 
 ---
 
@@ -151,23 +154,14 @@ Advertised to Azure via BGP.
 
 ### Subnets
 
-| Subnet | Purpose |
-|------------|------------|
-| 10.100.1.0/24 | VPN Gateway |
-| 10.100.2.0/24 | DNS Resolver |
-
-### Services
-
-- Azure VPN Gateway
-- Azure DNS Resolver
-- Route Tables
-- User Defined Routes
-- BGP Route Exchange
-
-### Route Summary
+```text
+10.100.1.0/24
+Azure VPN Gateway
+```
 
 ```text
-10.100.0.0/16
+10.100.2.0/24
+Azure DNS Resolver
 ```
 
 ---
@@ -182,24 +176,19 @@ Advertised to Azure via BGP.
 
 ### Subnets
 
-| Subnet | Purpose |
-|------------|------------|
-| 10.101.1.0/24 | Application Gateway |
-| 10.101.10.0/24 | Application Servers |
-| 10.101.20.0/24 | Private Endpoints |
-
-### Services
-
-- Application Gateway
-- Application VM
-- NSGs
-- Route Tables
-- Private Endpoints
-
-### Route Summary
+```text
+10.101.1.0/24
+Application Gateway
+```
 
 ```text
-10.101.0.0/16
+10.101.10.0/24
+Application Servers
+```
+
+```text
+10.101.20.0/24
+Private Endpoints
 ```
 
 ---
@@ -214,79 +203,9 @@ Advertised to Azure via BGP.
 
 ### Subnets
 
-| Subnet | Purpose |
-|------------|------------|
-| 10.102.10.0/24 | Azure Private DNS |
-
-### Services
-
-- Azure Private DNS
-- Shared Infrastructure Services
-
-### Route Summary
-
 ```text
-10.102.0.0/16
-```
-
----
-
-# Azure Route Summaries
-
-The Azure environment advertises the following networks:
-
-```text
-10.100.0.0/16
-10.101.0.0/16
-10.102.0.0/16
-```
-
----
-
-# VPN Connectivity
-
-## Headquarters
-
-VPN Endpoint:
-
-```text
-FG-FW-A / FG-FW-B
-```
-
-Peer:
-
-```text
-Azure VPN Gateway
-```
-
----
-
-## Branch
-
-VPN Endpoint:
-
-```text
-FG-FW-C / FG-FW-D
-```
-
-Peer:
-
-```text
-Azure VPN Gateway
-```
-
----
-
-## Topology
-
-```text
-HQ
-  \
-   \
-    Azure VPN Gateway
-   /
-  /
-Branch
+10.102.10.0/24
+Azure Private DNS
 ```
 
 ---
@@ -295,49 +214,26 @@ Branch
 
 ## Internal Routing
 
-### Headquarters
-
-Protocol:
-
 ```text
-OSPF Area 0
+OSPF Process ID 42
+Area 0
 ```
 
-Participants:
-
-- MLS-CORE-A
-- MLS-CORE-B
-- FG-FW-A
-- FG-FW-B
-
----
-
-### Branch
-
-Protocol:
+### Participants
 
 ```text
-OSPF Area 0
+MLS-CORE-A
+MLS-CORE-B
+FortiGate HA Pair
 ```
-
-Participants:
-
-- MLS-CORE-C
-- MLS-CORE-D
-- FG-FW-C
-- FG-FW-D
 
 ---
 
 ## External Routing
 
-Protocol:
-
 ```text
 BGP
 ```
-
-Azure functions as the cloud routing hub.
 
 ### Headquarters
 
@@ -376,46 +272,6 @@ ASN 65515
 Advertises:
 
 ```text
-10.100.0.0/16
-10.101.0.0/16
-10.102.0.0/16
-```
-
----
-
-# Connectivity Model
-
-Traffic between Headquarters and Branch traverses Azure.
-
-```text
-HQ
- |
- |
-Azure VPN Gateway
- |
- |
-Branch
-```
-
-### Headquarters Reachability
-
-Can access:
-
-```text
-10.69.0.0/16
-10.100.0.0/16
-10.101.0.0/16
-10.102.0.0/16
-```
-
----
-
-### Branch Reachability
-
-Can access:
-
-```text
-10.42.0.0/16
 10.100.0.0/16
 10.101.0.0/16
 10.102.0.0/16
