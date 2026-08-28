@@ -56,17 +56,14 @@ interface Port-channel1
  switchport mode trunk
  switchport trunk native vlan 999
  switchport trunk allowed vlan 10,20,30,40,100,999
+ no shutdown
 
-interface GigabitEthernet0/2
+interface range GigabitEthernet0/2 - 3
  description PO1_MEMBER
  switchport trunk encapsulation dot1q
  switchport mode trunk
- channel-group 1 mode active
-
-interface GigabitEthernet0/3
- description PO1_MEMBER
- switchport trunk encapsulation dot1q
- switchport mode trunk
+ switchport trunk native vlan 999
+ switchport trunk allowed vlan 10,20,30,40,100,999
  channel-group 1 mode active
 
 !================================
@@ -105,38 +102,38 @@ interface GigabitEthernet0/1
 
 interface vlan 10
  ip address 10.42.10.2 255.255.255.0
+ no shutdown
  standby 10 ip 10.42.10.1
  standby 10 priority 110
  standby 10 preempt
- no shut
 
 interface vlan 20
  ip address 10.42.20.2 255.255.255.0
+ no shutdown
  standby 20 ip 10.42.20.1
  standby 20 priority 110
  standby 20 preempt
- no shut
 
 interface vlan 30
  ip address 10.42.30.2 255.255.255.0
+ no shutdown
  standby 30 ip 10.42.30.1
  standby 30 priority 110
  standby 30 preempt
- no shut
 
 interface vlan 40
  ip address 10.42.40.2 255.255.255.0
+ no shutdown
  standby 40 ip 10.42.40.1
  standby 40 priority 110
  standby 40 preempt
- no shut
 
 interface vlan 100
  ip address 10.42.100.2 255.255.255.0
+ no shutdown
  standby 100 ip 10.42.100.1
  standby 100 priority 110
  standby 100 preempt
- no shut
 
 !================================
 ! OSPF
