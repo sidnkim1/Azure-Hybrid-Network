@@ -4,7 +4,7 @@
 
 This project simulates a hybrid enterprise environment consisting of two on-premises sites connected to Microsoft Azure.
 
-The environment is designed to provide hands-on experience with enterprise networking, cloud networking, VPN connectivity, routing, DNS, high availability, and troubleshooting.
+The environment combines enterprise networking, security, and cloud services within a highly available architecture designed around redundant connectivity, dynamic routing, and centralized cloud integration.
 
 ---
 
@@ -13,26 +13,24 @@ The environment is designed to provide hands-on experience with enterprise netwo
 ```text
                      Microsoft Azure
 
-                 +----------------------+
-                 |       Hub VNet       |
-                 +----------+-----------+
-                            |
-            +---------------+---------------+
-            |                               |
-            |                               |
-    +-------+--------+             +--------+-------+
-    |  Production    |             |   Services     |
-    |     VNet       |             |     VNet       |
-    +----------------+             +----------------+
-
-                            |
-                     Azure VPN Gateway
-
-                      /             \
-
-                     /               \
-
-           Headquarters              Branch
+        +----------------+    +----------------+
+        | Production     |    | Services       |
+        | VNET           |    | VNET           |
+        +-------+--------+    +--------+-------+
+                |                      |
+                |      VNET Peering    |
+                |                      |
+                +----------+-----------+
+                           |
+                    +------+------+
+                    |   Hub VNET  |
+                    +------+------+
+                           |
+                    Azure VPN Gateway
+                       /         \
+                      /           \
+                     /             \
+              Headquarters       Branch
 ```
 
 ---
@@ -44,12 +42,12 @@ The Headquarters site contains:
 - Four end-user hosts
 - Two access switches
 - Two Layer 3 core switches
-- Two FortiGate firewalls configured in HA
+- FortiGate HA firewall pair
 - Two ISP pass-through switches
 - Two ISP demarcation routers
 - Dual ISP connectivity
 
-Traffic traverses the access layer, core layer, and FortiGate firewalls before reaching external resources.
+The site provides redundant routing, switching, firewalling, and WAN connectivity services.
 
 ---
 
@@ -62,7 +60,7 @@ The site contains:
 - Four end-user hosts
 - Two access switches
 - Two Layer 3 core switches
-- Two FortiGate firewalls configured in HA
+- FortiGate HA firewall pair
 - Two ISP pass-through switches
 - Two ISP demarcation routers
 - Dual ISP connectivity
@@ -73,44 +71,62 @@ Branch resources communicate with Azure through the Azure VPN Gateway.
 
 # Azure Environment
 
-The Azure environment utilizes a hub-and-spoke architecture.
+The Azure environment utilizes a Hub-and-Spoke architecture.
 
 ## Hub VNet
 
-The Hub VNet provides:
+The Hub VNet serves as the central cloud connectivity platform.
 
-- VPN connectivity
-- Route propagation
-- DNS services
-
-### Components
+Components:
 
 - Azure VPN Gateway
 - Azure DNS Resolver
+
+Responsibilities:
+
+- Site-to-Site VPN connectivity
+- Hybrid routing
+- DNS integration
+- VNet interconnectivity
 
 ---
 
 ## Production VNet
 
-The Production VNet hosts:
+The Production VNet hosts application services.
+
+Components:
 
 - Application Gateway
-- Application VM
+- Application Virtual Machine
 - Private Endpoint
+
+Responsibilities:
+
+- Application delivery
+- Workload hosting
+- Private service access
 
 ---
 
 ## Services VNet
 
-The Services VNet hosts:
+The Services VNet provides shared cloud services.
+
+Components:
 
 - Azure Private DNS
+
+Responsibilities:
+
+- Private name resolution
+- DNS integration across Azure services
 
 ---
 
 # Connectivity
 
-Headquarters and Branch establish independent Site-to-Site VPN connections to Azure.
+Headquarters and Branch establish independent VPN connections to Azure.
 
 ```text
 HQ
@@ -122,7 +138,7 @@ HQ
 Branch
 ```
 
-The Hub VNet serves as the central connectivity point between all environments.
+Azure serves as the central transit hub between on-premises environments and cloud resources.
 
 ---
 
@@ -130,20 +146,54 @@ The Hub VNet serves as the central connectivity point between all environments.
 
 Routing within each site is handled through OSPF.
 
-Routing between Azure and the on-premises sites is handled through BGP.
+The Layer 3 core infrastructure provides:
 
-Azure functions as the cloud transit hub between Headquarters and Branch.
+- Inter-VLAN routing
+- HSRP gateway redundancy
+- Route exchange with the firewall layer
+
+Routing between Azure and the on-premises environments is performed using BGP.
+
+Azure functions as the central routing hub for the hybrid environment.
+
+---
+
+# High Availability
+
+Redundancy is implemented throughout the architecture.
+
+### Headquarters
+
+- Dual access switches
+- Dual Layer 3 core switches
+- FortiGate HA pair
+- Dual ISP connectivity
+
+### Branch
+
+- Dual access switches
+- Dual Layer 3 core switches
+- FortiGate HA pair
+- Dual ISP connectivity
+
+### Azure
+
+- Hub-and-Spoke architecture
+- Redundant Azure VPN infrastructure
+- Route propagation through BGP
 
 ---
 
 # DNS
 
-DNS services are provided using:
+DNS services are provided through Azure-native services.
+
+Components:
 
 - Azure DNS Resolver
 - Azure Private DNS
 
-DNS requests from on-premises sites are resolved through Azure DNS services over the VPN infrastructure.
+These services provide name resolution between Azure-hosted resources and connected enterprise networks.
 
 ---
 
@@ -153,10 +203,11 @@ DNS requests from on-premises sites are resolved through Azure DNS services over
 
 - Access Layer
 - Core Layer
-- FortiGate HA
+- HSRP
 - OSPF
-- BGP
+- FortiGate HA
 - Site-to-Site VPN
+- BGP
 
 ## Microsoft Azure
 
@@ -170,4 +221,4 @@ DNS requests from on-premises sites are resolved through Azure DNS services over
 - Application VM
 - Private Endpoint
 - Route Tables
-- NSGs
+- Network Security Groups
